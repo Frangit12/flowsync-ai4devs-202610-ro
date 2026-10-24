@@ -22,7 +22,7 @@ Borra el ejemplo de abajo cuando escribas el primero.
 
 ## Prompt 1
 
-**Modelo:** Opus 1M xHigh
+**Modelo:** Opus 5.5
 **Herramienta:** Claude Code
 
 lee las tareas que tengo asignadas
@@ -31,7 +31,7 @@ lee las tareas que tengo asignadas
 
 ## Prompt 2
 
-**Modelo:** Opus 1M xHigh
+**Modelo:** Opus 5.5
 **Herramienta:** Claude Code
 
 Revisa tareas por hacer
@@ -40,7 +40,7 @@ Revisa tareas por hacer
 
 ## Prompt 3
 
-**Modelo:** Opus 1M xHigh
+**Modelo:** Opus 5.5
 **Herramienta:** Claude Code
 
 git checkout -b alcance-fjm  
@@ -50,7 +50,7 @@ git checkout -b alcance-fjm
 
 ## Prompt 4
 
-**Modelo:** Opus 1M xHigh
+**Modelo:** Opus 5.5
 **Herramienta:** Claude Code
 
 resume el modelo de datos y que capabilities hay ya construidas  
@@ -66,7 +66,7 @@ resume el modelo de datos y que capabilities hay ya construidas
 
  ## Prompt 5
 
-**Modelo:** Opus 1M xHigh
+**Modelo:** Opus 5.5
 **Herramienta:** Claude Code
                                                                                                                             haz las preguntas que necesites sobre el problema en una sola ronda, no bajes al modelo de datos ni los endpoints
 
@@ -111,9 +111,31 @@ Usuarios y contexto
 
  ## Prompt 6
 
-**Modelo:** Opus 1M xHigh
+**Modelo:** Opus 5.5
 **Herramienta:** Claude Code
-                                                                                                                            LA información que tengo es (pegado toda la información indicada en el ejercicio)
+                                                                                                                            LA información que tengo es 
+                                                                                                                           - Qué duele hoy: la daily de sincronización y el "¿en qué estás?" constante por Slack/chat. Nadie ve el estado del equipo sin interrumpir a alguien.
+- Quién cobra el valor: los pares, no un lead. No hay reporte hacia arriba y a un manager le daría igual. Duele a los dos devs que descubren tarde que iban a lo mismo, y al que interrumpe a otro para preguntar.
+- Episodio concreto: dos personas del equipo tocaron el mismo módulo la misma semana porque una empezó sin que la otra lo supiera. Dos días perdidos.
+- Qué reunión desaparece (respuesta honesta, no la vendas de más): la daily NO desaparece entera. Desaparece la ronda de "¿en qué estás?", que hoy se come la mitad de los 15 minutos. La parte de bloqueos sigue, y este MVP no la resuelve.
+- Usuarios / equipo: equipos remotos pequeños, 3–10 personas. Roles planos: en el MVP todos ven y editan lo mismo, sin jerarquía de permisos.
+- Primer usuario concreto: equipo de 6 personas de producto SaaS, en 3 husos horarios, que hoy usa un gestor de tareas pesado y una daily de 15 minutos por videollamada. Es un CASO DE ESTUDIO, no un cliente real.
+- Fronteras: un espacio único compartido, sin entidad "equipo". Varios equipos separados, o gente en más de uno, queda FUERA del MVP: se anota como supuesto en el PRD, no se construye.
+- "Tiempo real" = ver los cambios de estado de las tareas sin refrescar ni preguntar. NO es chat, NO es videollamada, NO es colaboración simultánea sobre el mismo documento.
+- Es frescura, no presencia: el estado es de la TAREA, no de la persona. Nada de "quién está conectado ahora" ni indicadores de actividad; eso es vigilancia y lo rechazamos a propósito.
+- Forma de la señal: resumen que espera, no aviso que interrumpe. El caso es "llego por la mañana o vuelvo de una reunión y veo qué se ha movido". Sin notificaciones push.
+- Qué decisión cambia: no empezar algo que otra persona ya está tocando, y elegir lo siguiente sabiendo qué está libre. Si la única respuesta fuera "sentirse informado", el tiempo real no valdría lo que cuesta.
+- De dónde sale el estado: lo teclea la persona que hace la tarea, en segundos. Derivarlo de señales externas (Git/PRs, CI, calendario) está FUERA del MVP: es otro producto, con integraciones y OAuth de terceros.
+- Por qué se sostiene: no porque sea más agradable, sino porque son dos clics sobre una lista ya abierta, sin campos obligatorios, sin decidir sprint ni estimación. Y quien lo escribe cobra en el momento: esa misma lista es su cola de trabajo, la mira para decidir qué coge, y de paso deja de recibir interrupciones preguntándole cómo va. Si el beneficio fuera solo para los demás, no lo escribiría.
+- Si la información se queda vieja: el producto pierde el sentido, y lo asumo. Es el riesgo #1 a validar, no un detalle. La mitigación es que actualizar cueste dos clics, no obligar a nadie.
+- Es donde se hace el trabajo, no donde se cuenta: sustituye al gestor de tareas, no convive con él. FlowSync crea las tareas, no lee las de otro sitio. Convivir exigiría doble actualización, que es como muere esta categoría.
+- Renuncia explícita a sprints, estimaciones, épicas, backlog priorizado e informes. Un equipo que necesite eso no es nuestro usuario.
+- "Menos rollo que Jira" = crear una tarea y cambiarle el estado en segundos, sin flujos de configuración ni campos obligatorios. Lo mínimo para saber quién está en qué.
+- Qué necesita una tarea en el MVP: título, responsable, estado y fecha de vencimiento. La fecha, para ver de un vistazo qué se ha pasado de plazo.
+- Cómo se consume la lista: filtrando por estado, para centrarse en lo pendiente.
+- Éxito para el usuario: dejar de hacer la ronda de "¿en qué estás?" de la daily porque el estado del equipo se ve de un vistazo.
+- Criterio a una semana de uso real: que el equipo cancele esa ronda y nadie pida que vuelva. Si la siguen haciendo igual, no funcionó.
+- Cuánto construir: una vertical fina y usable de punta a punta, no el andamiaje amplio de un producto. Prefiero una capability terminada a tres a medias.
 
 **Qué salió:**
 ● Con la ficha quedan resueltas casi todas las preguntas. Te resumo lo que cubre, lo que no cubre con el supuesto que propongo, y tres choques internos de la
@@ -176,7 +198,7 @@ Usuarios y contexto
 **Herramienta:** Claude Code
                                                                                                                             - Fuera del MVP: notificaciones push, integración con Slack, roles/permisos avanzados, analítica/reporting, comentarios en tareas.
 
-**Qué salió:**
+**Qué salió:** por error cerre la sesión de claude y volvi a abrirla y continue desde ahi
 
 
 ## Prompt 8
@@ -225,3 +247,90 @@ acepto todos y cuentame de manera simplificada lo que tenemos hasta ahora y que 
 
 **Qué salió:**
 Claude comenta el estado de los archivos y propone subir ya una PR
+## Prompt 10
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+git add docs/prd prompts.md
+git commit -m "alcance: MVP + prompts"
+git push -u origin alcance-<tus-iniciales>
+
+**Qué salió:** Hizo el commit y subió la rama `alcance-fjm` a mi fork. No abrió el PR sin preguntar, porque va contra el repo del curso, y avisó de que el remoto `upstream` es `LIDR-academy-temp` y no `LIDR-academy`, como dice el README.
+
+## Prompt 11
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+hazlo contra el repositorio del curso
+
+**Qué salió:** Comprobó que mi fork cuelga de `LIDR-academy-temp` (`LIDR-academy` no es accesible) y abrió el PR #20 contra `s2/start`. Después pasó el revisor adversarial, que dijo que todavía no se puede dar por entregado: faltan las líneas 2 y 3 de la parte B, `prompts.md` no permite comprobar el "6 → 3" y no se ve un recorte propio. También señaló incoherencias: un clic o dos, qué pasa al coger una tarea ajena, que "hecha" no se pueda deshacer y choques con la ficha sin declarar.
+
+## Prompt 12
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+modifica prompts.md añadiendo lo que pongamos a partir de ahora.
+
+**Qué salió:** Añadió este prompt y los dos anteriores, que faltaban, y a partir de aquí va registrando cada prompt nuevo.
+
+## Prompt 13
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+punto el modelo usado en todos los promts es opus 5.5 corrigelo.vuelve a comentarme las incoherencias y lo más critico
+
+**Qué salió:** Cambió el modelo a Opus 5.5 en todos los prompts y volvió a resumir lo crítico y las incoherencias del alcance que encontró el revisor adversarial.
+
+## Prompt 14
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+he modificado manualmente el promt para añdir lo que faltaba, por otro lado vamos a recuperar y revisar los recortes
+
+**Qué salió:** Recuperó los tres recortes con lo que gana y lo que pierde cada uno, y me preguntó cuál mantener.
+
+## Prompt 15
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+(respuestas a las preguntas sobre los recortes) Recorte 1: Mantener + regla · Recorte 2: Mantener tal cual · Recorte 3: Mantener + definir
+
+**Qué salió:** Aplicó las tres decisiones al alcance:
+- una tarea en curso de otra persona no se puede coger;
+- el filtro y el deshacer quedan fuera, y el choque con la ficha se declara en §2;
+- "volver" queda definido como abrir la lista o volver a su pestaña, y la renuncia al "sin refrescar" se declara.
+
+Además unificó H1 en "un clic".
+
+## Prompt 16
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+no reescribas las exclusiones sin hipotesis. ampliame los 3 recortes
+
+**Qué salió:** No tocó las exclusiones. Amplió cada recorte con qué era antes, qué queda, la hipótesis que lo sostiene, lo que se pierde, la contradicción de fondo y qué tendría que pasar para revertirlo.
+
+## Prompt 17
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+aplica los cambios y haz commit
+
+**Qué salió:** Añadió al NO-alcance, en las entradas de los tres recortes, lo que se pierde con cada uno y qué tendría que pasar para que entrara, e hizo el commit.
+
+## Prompt 18
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+si dejalo vacio porque me quede sin tiempo. has push
+
+**Qué salió:** Dejó vacías las líneas 2 y 3 de la parte B, porque se me acabó el tiempo, e hizo el push para actualizar el PR #20.

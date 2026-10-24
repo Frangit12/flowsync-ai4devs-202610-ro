@@ -16,8 +16,9 @@ La ficha de hechos respondió casi todo. Estos huecos los decidió la IA y queda
 - **Estados:** tres fijos (pendiente, en curso, hecha), no configurables.
 - **Móvil:** no se diseña para móvil; basta con que no se rompa en pantalla estrecha.
 - **Choque "sin campos obligatorios" frente a "título, responsable, estado y fecha":** solo el título es obligatorio. El responsable es opcional, porque una tarea sin responsable es justo la que está libre para coger.
-- **Choque "sin refrescar" frente a "resumen que espera":** la lista está al día cada vez que vuelves a ella, sin pulsar nada, pero no se mueve en directo mientras la miras. Al llegar por la mañana ya muestra el estado actual, y eso basta para decidir qué coger. Ni la actualización en directo ni "qué cambió desde tu última visita" entran (ver NO-alcance).
-- **Responsable:** es quien pone la tarea en curso. Devolverla a pendiente la deja libre.
+- **Choque "sin refrescar" frente a "resumen que espera":** la lista se pone al día sola al abrirla y cada vez que vuelves a su pestaña, sin pulsar nada. Mientras la tienes delante no se mueve: si alguien cambia algo, lo ves la próxima vez que vuelvas. Se renuncia a propósito al "sin refrescar" de la ficha, porque al llegar por la mañana la lista ya muestra el estado actual, y eso basta para decidir qué coger. Ni la actualización en directo ni "qué cambió desde tu última visita" entran (ver NO-alcance).
+- **Responsable:** es quien pone la tarea en curso. Una tarea que ya está en curso con otra persona no se puede coger hasta que esa persona la devuelva a pendiente. Así nadie le quita una tarea a otro en silencio.
+- **Choque con "filtrando por estado":** la ficha pide filtrar, pero la lista solo muestra lo pendiente y lo que está en curso, y las hechas desaparecen. Marcar una tarea como hecha no se puede deshacer; se asume el riesgo de un clic equivocado (ver NO-alcance).
 - **Choque con la fecha de vencimiento:** la ficha la pide, pero queda fuera (ver NO-alcance).
 
 ## 3. El alcance
@@ -32,22 +33,22 @@ Equipos remotos pequeños, de 3 a 10 personas, con roles planos y repartidos en 
 
 ### Propuesta de valor
 
-Una única lista compartida en la que se ve, sin preguntar ni recargar a mano, quién está con qué y qué está libre. Mantenerla cuesta dos clics, y quien la actualiza la usa como su propia cola de trabajo.
+Una única lista compartida en la que se ve, sin preguntar ni recargar a mano, quién está con qué y qué está libre. Mantenerla cuesta un clic por cambio, y quien la actualiza la usa como su propia cola de trabajo.
 
 ### Alcance
 
 1. **Crear una tarea escribiendo solo el título.** Sin más campos obligatorios.
-2. **Ponerla en curso, que te la asigna, y marcarla como hecha**, cada cosa en un clic. Devolverla a pendiente la deja libre.
-3. **Una única lista de lo pendiente y lo que está en curso**, con quién está en cada tarea, al día cada vez que vuelves a ella. Las hechas desaparecen de la lista.
+2. **Ponerla en curso, que te la asigna, y marcarla como hecha**, cada cosa en un clic. Devolverla a pendiente la deja libre. Una tarea en curso de otra persona no se puede coger.
+3. **Una única lista de lo pendiente y lo que está en curso**, con quién está en cada tarea, que se pone al día sola al abrirla y al volver a su pestaña. Las hechas desaparecen de la lista.
 
 ### NO-alcance
 
-Cada exclusión lleva la hipótesis que no ayuda a validar. Las dos hipótesis del MVP son: **(H1)** la gente mantiene el estado al día si cuesta dos clics, y **(H2)** ver el estado del equipo evita empezar algo que otro ya está tocando.
+Cada exclusión lleva la hipótesis que no ayuda a validar. Las dos hipótesis del MVP son: **(H1)** la gente mantiene el estado al día si cada cambio cuesta un clic, y **(H2)** ver el estado del equipo evita empezar algo que otro ya está tocando.
 
 - **Fecha de vencimiento.** La pide la ficha, pero "qué se ha pasado de plazo" es una pregunta de seguimiento, no de coordinación. No ayuda a H1 ni a H2, y añade un campo más que mantener, lo que va contra H1.
-- **Actualización en directo de la lista.** Para decidir qué coger (H2) basta con que la lista esté al día al volver a ella. Con 3 husos horarios, el caso que se repite es "llego y miro", no "miro cómo se mueve". Que dos personas cojan la misma tarea en el mismo minuto, en un equipo de 6, es poco probable.
-- **Asignar una tarea a otra persona.** Es un gesto de manager, y los roles son planos. Para H2 basta con saber quién la ha cogido.
-- **Filtrar la lista.** Con 6 personas, lo único que estorba son las hechas, y esas ya desaparecen.
+- **Actualización en directo de la lista.** Para decidir qué coger (H2) basta con que la lista esté al día al volver a ella. Con 3 husos horarios, el caso que se repite es "llego y miro", no "miro cómo se mueve". Se pierde: con la pestaña abierta y a la vista se ve un estado viejo, y dos personas mirando a la vez pueden intentar coger la misma tarea (el bloqueo del responsable lo amortigua, pero la segunda se entera tarde). Que eso pase en un equipo de 6 es un supuesto sin evidencia. Entra si en la semana de uso aparecen choques de "la cogí y ya la tenía otro", o si la gente pregunta igual porque no se fía de la lista.
+- **Asignar una tarea a otra persona.** Es un gesto de manager, y los roles son planos. Para H2 basta con saber quién la ha cogido. Se pierde reservar una tarea pendiente para alguien, y las tareas en curso de alguien ausente quedan bloqueadas hasta que vuelva. Entra "liberar la tarea de otro" si aparecen tareas bloqueadas por ausencias, y "asignar" si el equipo pide repartir trabajo por adelantado.
+- **Filtrar la lista y deshacer "hecha".** Con 6 personas, lo único que estorba son las hechas, y esas ya desaparecen. Un "deshacer" no ayuda a H1 ni a H2. Se pierde: un clic equivocado en "hecha" hace desaparecer la tarea, y no queda rastro de lo terminado. Entra "deshacer", no el filtro, si en la semana de uso alguien pierde una tarea así.
 - **Ver qué cambió desde tu última visita.** Responde a "sentirse informado", que la ficha descarta como motivo. Para decidir qué coger (H2) basta con el estado actual.
 - **Editar el título y borrar tareas.** No valida H1 ni H2. Una tarea creada por error se marca como hecha y desaparece de la lista.
 - **Estado "bloqueada" y gestión de bloqueos.** La ficha dice que esa parte de la daily sigue y que el MVP no la resuelve.

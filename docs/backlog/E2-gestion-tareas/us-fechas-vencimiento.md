@@ -162,7 +162,8 @@ Las tallas S/M/L miden dentro de ese techo, no en horas. Talla y riesgo van por 
 ### FS-118.1 — Persistir la fecha de vencimiento de una tarea
 
 **Tipo:** Migración/DB · **Talla:** S · **Riesgo:** bajo
-**Entrega:** la persistencia pasa a poder representar tanto una tarea con fecha de vencimiento como una sin ella.
+**Capa:** migración.
+**Hereda:** la base de CA-1, CA-2, CA-3 y CA-7.
 
 - [ ] La migración se ejecuta limpia sobre una base que ya contiene tareas.
 - [ ] Su reverso deja el esquema como estaba.
@@ -170,100 +171,130 @@ Las tallas S/M/L miden dentro de ese techo, no en horas. Talla y riesgo van por 
 - [ ] El esquema generado se regenera con el comando del proyecto y se commitea; no se edita a mano.
 - [ ] Lint, formato y typecheck del backend en verde.
 
-**Depende de:** que la tarea exista (historia de creación, fuera de FS-118).
+**Depende de:** E2-1, que la tarea exista (fuera de FS-118).
 **Nota de riesgo:** la base de desarrollo y la de pruebas son el mismo fichero; migrar toca también el estado local.
 
 ### FS-118.2 — Regla de vencimiento en el dominio
 
 **Tipo:** Modelo/Dominio · **Talla:** M · **Riesgo:** alto
-**Entrega:** la lógica que decide si una tarea está vencida (CA-5 a CA-10, CA-19 y CA-20).
+**Capa:** modelo.
+**Hereda:** CA-5 a CA-10, CA-19 y CA-20.
 
 - [ ] La regla vive en el dominio y no se reimplementa en ninguna otra capa.
-- [ ] Pruebas unitarias de los cuatro bordes: día anterior, mismo día, día posterior y sin fecha.
-- [ ] Prueba de que una tarea hecha con la fecha pasada no está vencida, y de que pasar a hecho no altera la fecha.
-- [ ] Prueba con dos días de referencia distintos: dos personas obtienen lecturas diferentes y ambas son correctas.
-- [ ] Prueba de que una tarea pasa a vencida por el mero avance del día, sin que nadie la modifique.
+- [ ] Pruebas unitarias de cada criterio heredado, con los cuatro bordes explícitos: día anterior, mismo día, día posterior y sin fecha.
+- [ ] Las pruebas fijan el día de referencia; ninguna depende del reloj real ni del día en que se ejecute.
+- [ ] Cada prueba nombra en su título el criterio que verifica.
 - [ ] Lint, formato y typecheck del backend en verde.
 
 **Depende de:** FS-118.1.
 **Nota de riesgo:** el más peligroso de la historia pese a ser M. CA-5 es la trampa clásica del día de más; CA-19 junto a CA-20 obliga a decidir si el vencimiento se resuelve al mirar o se congela al guardar, y ese fallo no se manifiesta hasta que alguien cruza la medianoche. Es además el nodo con más tickets colgando por detrás.
 
-### FS-118.3 — Fijar y retirar la fecha de una tarea
+### FS-118.3 — Base de pruebas de integración
+
+**Tipo:** Test · **Talla:** M (condicional) · **Riesgo:** medio
+**Capa:** infraestructura de pruebas del backend.
+**Hereda:** ningún criterio propio; hace verificables los de FS-118.4 y FS-118.7 (R-7 del PRD).
+
+- [ ] Las pruebas de integración no comparten estado con la base de desarrollo.
+- [ ] Una prueba de integración real escribe en la base y deja constancia de que no queda residuo entre pasadas.
+- [ ] El resultado no depende del orden de ejecución.
+- [ ] La guía del proyecto refleja cómo se escribe una prueba que toca la base.
+- [ ] Lint, formato y typecheck del backend en verde.
+
+**Depende de:** nada dentro de FS-118.
+**Nota de riesgo:** su coste se paga una sola vez. Si otra historia anterior ya entregó esta base, el ticket se cierra sin trabajo: FS-118 ocupa el puesto 11 del backlog, así que es lo más probable.
+
+### FS-118.4 — Fijar, cambiar, retirar y consultar la fecha de una tarea
 
 **Tipo:** Endpoint/API · **Talla:** M · **Riesgo:** medio
-**Entrega:** establecer, cambiar y retirar la fecha de una tarea existente, y consultarla junto con su condición de vencimiento.
+**Capa:** endpoint.
+**Hereda:** la parte de servidor de CA-2, CA-3, CA-13, CA-14, CA-17, CA-19 y CA-20.
 
 - [ ] Sigue las convenciones de ruta y de forma de respuesta ya establecidas en el proyecto; nada ad hoc.
 - [ ] La respuesta se construye con el transformer correspondiente; no se devuelve el modelo en crudo.
-- [ ] La entrada se valida con el mecanismo de validación del proyecto; una fecha no válida se rechaza señalando el campo, con el mismo formato de error que ya usa el resto de la API.
-- [ ] Una fecha ya pasada se acepta sin bloquearla.
-- [ ] Retirar la fecha es una operación admitida, no un caso de error.
-- [ ] Exige sesión iniciada, igual que el resto del espacio, y no comprueba propiedad de la tarea.
-- [ ] Pruebas de integración de: fijar, cambiar, retirar y entrada no válida.
+- [ ] La entrada se valida con el mecanismo de validación del proyecto, y sus errores usan el mismo formato que el resto de la API.
+- [ ] Tiene la misma protección de acceso que el resto del espacio.
+- [ ] La condición de vencimiento se obtiene de la regla de FS-118.2, sin recalcularla aquí.
+- [ ] Pruebas de integración de cada criterio heredado, incluida una con dos días de referencia distintos sobre la misma tarea.
 - [ ] Los tipos generados para el cliente se regeneran y se commitean si cambian.
 - [ ] Lint, formato y typecheck del backend en verde.
 
-**Depende de:** FS-118.2.
-**Nota de riesgo:** primeras pruebas que escriben en la base, compartida con el servidor de desarrollo: sin aislar el estado, los fallos van y vienen.
+**Depende de:** FS-118.2 y FS-118.3.
+**Nota de riesgo:** el día de quien mira tiene que llegar de algún modo hasta la regla. FS-118.2 lo resuelve en abstracto, pero es aquí donde CA-19 se cumple o se rompe de verdad.
 
-### FS-118.4 — Editar la fecha y señalar el vencimiento, en el detalle de la tarea
+### FS-118.5 — Editar la fecha en el detalle de la tarea
 
 **Tipo:** Frontend · **Talla:** M · **Riesgo:** medio
-**Entrega:** la interacción de CA-2, CA-3, CA-14, CA-15 y CA-16, más la señal de CA-4 y la ausencia deliberada de CA-11 y CA-12.
+**Capa:** UI, detalle de la tarea.
+**Hereda:** CA-2, CA-3, CA-14, CA-15 y CA-16.
 
 - [ ] La llamada a la API se añade al único punto de contacto del proyecto, nunca dentro del componente.
-- [ ] El cambio se ve reflejado al instante, sin recargar ni reabrir la tarea, y queda guardado sin ningún paso adicional.
-- [ ] Quitar la fecha no abre ningún diálogo de confirmación.
-- [ ] Una fecha no válida deja intacta la que hubiera y muestra el mensaje junto al campo, en castellano, reutilizando el mecanismo de errores por campo ya existente.
-- [ ] Al abrir una tarea vencida, su condición se comunica con una señal propia: quien mira no tiene que comparar la fecha con hoy.
-- [ ] La lista principal no muestra fechas ni marca de vencimiento alguna, y una tarea sin fecha no recibe aviso ni indicación de que le falte algo.
-- [ ] La señal no depende solo del color: cumple el contraste y la accesibilidad exigidos al resto de la interfaz, y la interacción es operable con teclado.
+- [ ] Los errores de validación reutilizan el mecanismo de errores por campo ya existente, en castellano.
+- [ ] Los errores de conexión se tratan como en el resto de la aplicación; ningún error técnico crudo llega a quien usa la pantalla.
+- [ ] La interacción es operable con teclado.
 - [ ] Se reutilizan los componentes de interfaz del proyecto; los generados no se tocan a mano.
+- [ ] Comprobación manual de cada criterio heredado, anotada en el PR: el frontend no tiene runner de pruebas.
 - [ ] Lint, formato y typecheck del frontend en verde.
 
-**Depende de:** FS-118.3 y la vista de detalle de la tarea (fuera de FS-118, ver PA-6 del PRD).
-**Nota de riesgo:** no hay ningún componente de fecha en el proyecto; decidir si se trae uno o se resuelve con un campo simple debe hacerse **antes** de empezar. CA-16 y CA-14 rozan entre sí: guardar sin botón y a la vez conservar el valor anterior ante una fecha inválida. Y CA-4 sigue marcado como propuesto: construirlo antes de validarlo puede obligar a rehacerlo.
+**Depende de:** FS-118.4 y E2-5, la vista de detalle (fuera de FS-118, ver PA-6 del PRD).
+**Nota de riesgo:** no hay ningún componente de fecha en el proyecto; decidir si se trae uno o se resuelve con un campo simple debe hacerse **antes** de empezar. CA-16 y CA-14 rozan entre sí: guardar sin botón y a la vez conservar el valor anterior ante una fecha inválida.
 
-### FS-118.5 — Cobertura de la historia y sus regresiones
+### FS-118.6 — Señalar el vencimiento en el detalle de la tarea
 
-**Tipo:** Test · **Talla:** L (condicional) · **Riesgo:** alto
-**Entrega:** los criterios que ningún ticket anterior deja cubiertos, sobre todo los negativos.
+**Tipo:** Frontend · **Talla:** S · **Riesgo:** medio
+**Capa:** UI, detalle de la tarea.
+**Hereda:** CA-4, y la parte visible de CA-5 a CA-10, CA-12, CA-13, CA-19 y CA-20.
 
-- [ ] Cubre CA-1: el flujo de creación no ofrece ni sugiere la fecha.
-- [ ] Cubre CA-11 y CA-12 desde fuera: la lista sigue sin mostrar fechas ni marcas, y una tarea sin fecha no genera avisos.
-- [ ] Cubre CA-18: reasignar el responsable no altera la fecha ni la condición de vencida.
-- [ ] Cubre CA-8 recorriendo el camino real del usuario, no solo la regla de dominio.
+- [ ] Lee la condición de vencimiento que entrega la API; no compara fechas en el cliente.
+- [ ] La señal no depende solo del color y cumple el contraste exigido al resto de la interfaz (RNF-6).
+- [ ] Se reutilizan los componentes de interfaz del proyecto; los generados no se tocan a mano.
+- [ ] Comprobación manual de cada criterio heredado, anotada en el PR: el frontend no tiene runner de pruebas.
+- [ ] Lint, formato y typecheck del frontend en verde.
+
+**Depende de:** FS-118.5.
+**Nota de riesgo:** CA-4 sigue marcado como propuesto: construirlo antes de validarlo puede obligar a rehacerlo. Va en ticket propio para que esa duda no retenga la edición de la fecha.
+
+### FS-118.7 — Cobertura de los criterios transversales
+
+**Tipo:** Test · **Talla:** M · **Riesgo:** alto
+**Capa:** pruebas sobre el camino real, de API hacia fuera.
+**Hereda:** CA-1, CA-8, CA-11, CA-12 y CA-18, sobre todo los negativos.
+
+- [ ] Cada criterio heredado se verifica por el camino real del usuario, no solo en la regla de dominio.
+- [ ] Lo que no se pueda automatizar sin runner en el frontend se comprueba a mano y se anota en el PR, señalando qué parte queda sin cobertura automática.
 - [ ] Cada prueba puede fallar por el motivo que dice cubrir; ninguna pasa por accidente.
 - [ ] Las pruebas aíslan su propio estado, no dependen del orden de ejecución y no dejan residuo entre pasadas.
 - [ ] Cada prueba nombra en su título el criterio que verifica.
+- [ ] Lint, formato y typecheck del backend en verde.
 
-**Depende de:** FS-118.4.
-**Nota de riesgo:** es L **solo si carga con el montaje de la base de pruebas**, que hoy no existe (R-7 del PRD); si otra historia ya lo pagó, baja a M. Es el último de la cadena y el portador de los criterios negativos, que son la identidad del producto: por eso es el primero que se sacrifica si la historia se alarga, y por eso conviene no dejarlo para el final.
+**Depende de:** FS-118.6, FS-118.3 y, fuera de FS-118, E2-4 (cambiar estado, para CA-8), E2-7 (reasignar, para CA-18) y E3-1 (la lista, para CA-11).
+**Nota de riesgo:** es el último de la cadena y el portador de los criterios negativos, que son la identidad del producto: por eso es el primero que se sacrifica si la historia se alarga. No cerrar la historia sin él.
 
 ### Grafo de dependencias
 
 ```mermaid
 graph TD
-    E1["la tarea existe<br/>(fuera de FS-118)"] --> T1["FS-118.1<br/>Migración/DB"]
+    E21["E2-1 · la tarea existe<br/>(fuera de FS-118)"] --> T1["FS-118.1<br/>Migración/DB"]
     T1 --> T2["FS-118.2<br/>Modelo/Dominio"]
-    T2 --> T3["FS-118.3<br/>Endpoint/API"]
-    T3 --> T4["FS-118.4<br/>Frontend"]
-    E5["vista de detalle<br/>(fuera de FS-118)"] --> T4
-    T4 --> T5["FS-118.5<br/>Test"]
-    R7["base de pruebas<br/>(R-7, no existe)"] -.-> T3
-    R7 -.-> T5
+    T2 --> T4["FS-118.4<br/>Endpoint/API"]
+    T3["FS-118.3<br/>Test: base de pruebas"] --> T4
+    T4 --> T5["FS-118.5<br/>Frontend: editar"]
+    E25["E2-5 · vista de detalle<br/>(fuera de FS-118)"] --> T5
+    T5 --> T6["FS-118.6<br/>Frontend: señal"]
+    T6 --> T7["FS-118.7<br/>Test: cobertura"]
+    T3 --> T7
+    EXT["E2-4, E2-7 y E3-1<br/>(fuera de FS-118)"] --> T7
 ```
-
-La línea discontinua no bloquea el trabajo: bloquea poder **cerrarlo**, porque el Definition of Done de esos tickets pide pruebas.
 
 ### Orden de implementación
 
 | Paso | Ticket | Por qué va aquí |
 |---|---|---|
-| 1 | FS-118.1 | Nada puede guardarse hasta que exista dónde |
+| 1 | FS-118.1 y FS-118.3 | Sin relación entre sí: dos personas pueden llevarlos a la vez. FS-118.3 se salta si ya existe la base |
 | 2 | FS-118.2 | La regla, antes que cualquier capa que la exponga |
-| 3 | FS-118.3 | Cierra el backend completo |
-| 4 | FS-118.4 | La interfaz, una vez hay API que consumir |
-| 5 | FS-118.5 | Solo tiene sentido con el camino de usuario construido |
+| 3 | FS-118.4 | Cierra el backend completo |
+| 4 | FS-118.5 | La interfaz, una vez hay API que consumir |
+| 5 | FS-118.6 | Separado para que CA-4, aún propuesto, no retenga la edición |
+| 6 | FS-118.7 | Solo tiene sentido con el camino de usuario construido |
 
-**Es una cadena, no un abanico:** los cinco tickets van en serie. Una segunda persona no acelera esta historia; acelera empezando otra.
+**Casi una cadena:** salvo FS-118.3, los tickets van en serie. Una segunda persona apenas acelera esta historia; acelera empezando otra.

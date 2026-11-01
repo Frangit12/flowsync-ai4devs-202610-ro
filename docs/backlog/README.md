@@ -39,7 +39,7 @@ Doce historias cubren las dos épicas, **todas con criterios de aceptación escr
 | [**E2-6** — Editar el título](./E2-gestion-tareas/us-editar-titulo.md) | Corregir un título que no dice lo que parecía decir | — |
 | [**E2-7** — Reasignar responsable](./E2-gestion-tareas/us-reasignar-responsable.md) | Coger una tarea libre sin pedir permiso a nadie | — |
 | [**E2-10** — Borrar tarea](./E2-gestion-tareas/us-borrar-tarea.md) | Quitar de en medio lo que ya no se va a hacer | — |
-| [**FS-118** — Fecha de vencimiento y tareas vencidas](./E2-gestion-tareas/us-fechas-vencimiento.md) | Poner o quitar una fecha, y saber si algo se ha pasado de plazo | **5** · de la migración a las pruebas |
+| [**FS-118** — Fecha de vencimiento y tareas vencidas](./E2-gestion-tareas/us-fechas-vencimiento.md) | Poner o quitar una fecha, y saber si algo se ha pasado de plazo | **7** · de la migración a las pruebas |
 | [**FS-142** — Filtrar las tareas por estado](./E2-gestion-tareas/us-filtrar-por-estado.md) | Centrarse en lo pendiente sin que lo terminado estorbe | **1** · deliberadamente ligera |
 
 ### E3 · Actividad del equipo
@@ -72,7 +72,7 @@ Condicionan cuándo se puede cerrar el trabajo, y ninguno se resuelve dentro de 
 | Bloqueo | Efecto |
 |---|---|
 | **No hay base de pruebas** (R-7) | No impide escribir código; impide **cerrar** cualquier ticket cuyo DoD pida pruebas |
-| **La vista de detalle no está contabilizada** (PA-6) | Prerrequisito de FS-118.4, y la razón por la que E2-5 no se puede descomponer todavía |
+| **La vista de detalle no está contabilizada** (PA-6) | Prerrequisito de FS-118.5, y la razón por la que E2-5 no se puede descomponer todavía |
 | **Contradicción CA-9 / CA-17** (PA abierto en FS-142) | Decisión de producto sin tomar. Bloquea FS-142.1 |
 | **Sin regla de orden ni agrupación de la lista** (PA-3) | E3-1 promete enumerar el trabajo de cada persona, y sin orden esa promesa no se sostiene al crecer |
 | **Sin decisión sobre el choque de ediciones** (PA-8) | Lo provocan E2-7, E2-10 y E3-2 a la vez; cada implementación lo resolvería distinto |

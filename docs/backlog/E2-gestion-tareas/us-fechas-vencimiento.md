@@ -245,8 +245,8 @@ Las tallas S/M/L miden dentro de ese techo, no en horas. Talla y riesgo van por 
 **Capa:** UI, detalle de la tarea.
 **Hereda:** CA-4, y la parte visible de CA-5 a CA-10, CA-12, CA-13, CA-19 y CA-20.
 
-- [ ] Lee la condición de vencimiento que entrega la API; no compara fechas en el cliente.
-- [ ] La señal no depende solo del color y cumple el contraste exigido al resto de la interfaz (RNF-6).
+- [ ] Reutiliza la regla de FS-118.2; no la reimplementa.
+- [ ] Cumple el contraste exigido al resto de la interfaz (RNF-6).
 - [ ] Se reutilizan los componentes de interfaz del proyecto; los generados no se tocan a mano.
 - [ ] Comprobación manual de cada criterio heredado, anotada en el PR: el frontend no tiene runner de pruebas.
 - [ ] Lint, formato y typecheck del frontend en verde.
@@ -257,7 +257,7 @@ Las tallas S/M/L miden dentro de ese techo, no en horas. Talla y riesgo van por 
 ### FS-118.7 — Cobertura de los criterios transversales
 
 **Tipo:** Test · **Talla:** M · **Riesgo:** alto
-**Capa:** pruebas sobre el camino real, de API hacia fuera.
+**Capa:** pruebas sobre el camino real, de la API a la UI.
 **Hereda:** CA-1, CA-8, CA-11, CA-12 y CA-18, sobre todo los negativos.
 
 - [ ] Cada criterio heredado se verifica por el camino real del usuario, no solo en la regla de dominio.
@@ -265,9 +265,9 @@ Las tallas S/M/L miden dentro de ese techo, no en horas. Talla y riesgo van por 
 - [ ] Cada prueba puede fallar por el motivo que dice cubrir; ninguna pasa por accidente.
 - [ ] Las pruebas aíslan su propio estado, no dependen del orden de ejecución y no dejan residuo entre pasadas.
 - [ ] Cada prueba nombra en su título el criterio que verifica.
-- [ ] Lint, formato y typecheck del backend en verde.
+- [ ] Lint, formato y typecheck en verde en cada lado que se toque.
 
-**Depende de:** FS-118.6, FS-118.3 y, fuera de FS-118, E2-4 (cambiar estado, para CA-8), E2-7 (reasignar, para CA-18) y E3-1 (la lista, para CA-11).
+**Depende de:** FS-118.6 y, fuera de FS-118, E2-1 (crear, para CA-1), E2-4 (cambiar estado, para CA-8), E2-7 (reasignar, para CA-18) y E3-1 (la lista, para CA-11).
 **Nota de riesgo:** es el último de la cadena y el portador de los criterios negativos, que son la identidad del producto: por eso es el primero que se sacrifica si la historia se alarga. No cerrar la historia sin él.
 
 ### Grafo de dependencias
@@ -282,15 +282,14 @@ graph TD
     E25["E2-5 · vista de detalle<br/>(fuera de FS-118)"] --> T5
     T5 --> T6["FS-118.6<br/>Frontend: señal"]
     T6 --> T7["FS-118.7<br/>Test: cobertura"]
-    T3 --> T7
-    EXT["E2-4, E2-7 y E3-1<br/>(fuera de FS-118)"] --> T7
+    EXT["E2-1, E2-4, E2-7 y E3-1<br/>(fuera de FS-118)"] --> T7
 ```
 
 ### Orden de implementación
 
 | Paso | Ticket | Por qué va aquí |
 |---|---|---|
-| 1 | FS-118.1 y FS-118.3 | Sin relación entre sí: dos personas pueden llevarlos a la vez. FS-118.3 se salta si ya existe la base |
+| 1 | FS-118.1 y FS-118.3 | Sin relación entre sí: dos personas pueden llevarlos a la vez. FS-118.3 se cierra sin trabajo si ya existe la base |
 | 2 | FS-118.2 | La regla, antes que cualquier capa que la exponga |
 | 3 | FS-118.4 | Cierra el backend completo |
 | 4 | FS-118.5 | La interfaz, una vez hay API que consumir |

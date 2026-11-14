@@ -228,3 +228,14 @@ haz el commit, el push y abre el PR
 ```
 
 **Qué salió:** commit de `docs/auditoria/fmj.md` y `prompts.md` con `/commit`, push de `auditoria-fmj` al fork y PR contra el repo del curso.
+
+## Prompt 18
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+```
+corrige las filas 4, 6 y 7 y sube el PR
+```
+
+**Qué salió:** tras el review adversarial, fila 4 pasa a «no se puede comprobar» (squash/rebase deja el mismo rastro; commits del docente), fila 6 a «no se cumple» (`cdf903a` sin scope) y fila 7 a «no se puede comprobar» (falta regenerar `.adonisjs/`). Commit y push al PR #80.
